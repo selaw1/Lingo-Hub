@@ -2,9 +2,11 @@ from django.conf import settings
 from django.db import models
 
 from attendance.models import Attendance
+from common.utils import make_uuid
 
 
 class Tier(models.Model):
+    id = models.UUIDField(primary_key=True, default=make_uuid)
     name = models.CharField(max_length=50)  # Bronze, Silver, Gold...
     min_stamps = models.IntegerField()
     icon = models.CharField(max_length=100, blank=True)  # emoji or static path
@@ -24,6 +26,7 @@ class Stamp(models.Model):
         ("manual", "Manual Award"),
         ("streak", "Streak Bonus"),
     ]
+    id = models.UUIDField(primary_key=True, default=make_uuid)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="stamps"
     )
