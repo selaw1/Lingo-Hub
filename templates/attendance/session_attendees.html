@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} — Attendees{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">{{ session.title }} — Attendees ({{ count }})</h1>
+  <a href="{% url 'export_attendance' %}?session_id={{ session.id }}" class="text-sm underline text-gray-700">
+    Export this session (Excel)
+  </a>
+</div>
+
+<table class="w-full bg-white rounded shadow text-sm">
+  <thead class="bg-gray-100 text-left">
+    <tr>
+      <th class="px-4 py-2">Student</th>
+      <th class="px-4 py-2">Scanned At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in attendees %}
+    <tr class="border-t">
+      <td class="px-4 py-2">{{ a.user.username }}</td>
+      <td class="px-4 py-2">{{ a.timestamp }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="2" class="px-4 py-2 text-gray-500">No one has scanned in yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

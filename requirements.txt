@@ -1,0 +1,10 @@
+Django==5.2.15
+psycopg2-binary==2.9.12
+pandas==3.0.3
+openpyxl==3.1.5
+django-ratelimit==4.1.0
+qrcode==8.2
+pillow==12.3.0
+ruff==0.15.20
+coverage==7.15.0
+debugpy==1.8.11

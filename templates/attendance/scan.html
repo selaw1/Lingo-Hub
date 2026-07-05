@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Scan — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
+  <h1 class="text-xl font-bold mb-4">Scan Session QR</h1>
+  <div id="reader" class="w-full"></div>
+  <p id="scan-status" class="text-sm text-gray-500 mt-4"></p>
+
+  <form id="scan-form" method="post" action="{% url 'scan' %}" class="hidden">
+    {% csrf_token %}
+    <input type="hidden" name="qr" id="qr-value">
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+  const statusEl = document.getElementById('scan-status');
+  const form = document.getElementById('scan-form');
+  const qrInput = document.getElementById('qr-value');
+  let submitted = false;
+
+  const scanner = new Html5Qrcode("reader");
+
+  function onScanSuccess(decodedText) {
+    if (submitted) return;
+    submitted = true;
+    statusEl.textContent = "QR detected — checking you in...";
+    qrInput.value = decodedText;
+    scanner.stop().finally(() => form.submit());
+  }
+
+  Html5Qrcode.getCameras().then((cameras) => {
+    if (cameras && cameras.length) {
+      scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        onScanSuccess
+      );
+    } else {
+      statusEl.textContent = "No camera found on this device.";
+    }
+  }).catch(() => {
+    statusEl.textContent = "Camera access is required to scan.";
+  });
+</script>
+{% endblock %}

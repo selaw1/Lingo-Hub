@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Register — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8">
+  <h1 class="text-xl font-bold mb-4">Register</h1>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="w-full bg-black text-white rounded py-2">Create account</button>
+  </form>
+  <p class="mt-4 text-sm text-gray-600">
+    Already have an account? <a href="{% url 'login' %}" class="underline">Login</a>
+  </p>
+</div>
+{% endblock %}

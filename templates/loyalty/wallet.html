@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}My Wallet — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
+  <p class="text-sm text-gray-500">Current Tier</p>
+  <h1 class="text-3xl font-bold my-2">
+    {% if tier %}{{ tier.icon }} {{ tier.name }}{% else %}No tier yet{% endif %}
+  </h1>
+  <p class="text-lg font-semibold">{{ stamp_count }} stamp{{ stamp_count|pluralize }}</p>
+
+  {% if next_tier %}
+    <div class="mt-4">
+      <div class="w-full bg-gray-200 rounded-full h-3">
+        <div class="bg-black h-3 rounded-full" style="width: {% widthratio stamp_count next_tier.min_stamps 100 %}%"></div>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">
+        {{ stamp_count }}/{{ next_tier.min_stamps }} stamps to {{ next_tier.name }}
+      </p>
+    </div>
+  {% else %}
+    <p class="text-xs text-gray-500 mt-4">You've reached the top tier!</p>
+  {% endif %}
+</div>
+
+{% if tiers %}
+<div class="max-w-sm mx-auto mt-6">
+  <h2 class="text-sm font-semibold text-gray-600 mb-2">Tier Ladder</h2>
+  <ul class="space-y-1">
+    {% for t in tiers %}
+    <li class="flex items-center justify-between bg-white rounded px-4 py-2 shadow-sm text-sm
+                {% if tier and t.id == tier.id %}ring-2 ring-black{% endif %}">
+      <span>{{ t.icon }} {{ t.name }}</span>
+      <span class="text-gray-500">{{ t.min_stamps }}+ stamps</span>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}

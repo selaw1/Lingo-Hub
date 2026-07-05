@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sessions — Lingo Hub{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-bold">Sessions</h1>
+  <a href="{% url 'session_create' %}" class="bg-black text-white rounded px-4 py-2 text-sm">+ New Session</a>
+</div>
+
+<div class="mb-4">
+  <a href="{% url 'export_attendance' %}" class="text-sm underline text-gray-700">Export all attendance (Excel)</a>
+</div>
+
+<ul class="space-y-2">
+  {% for session in sessions %}
+  <li class="bg-white rounded shadow p-4 flex items-center justify-between">
+    <div>
+      <p class="font-semibold">{{ session.title }}</p>
+      <p class="text-xs text-gray-500">
+        Created {{ session.created_at }} — {% if session.is_active %}Active{% else %}Inactive{% endif %}
+      </p>
+    </div>
+    <div class="flex gap-3 text-sm">
+      <a href="{% url 'session_qr' session.id %}" class="underline">Show QR</a>
+      <a href="{% url 'session_attendees' session.id %}" class="underline">Attendees</a>
+    </div>
+  </li>
+  {% empty %}
+  <li class="text-gray-500">No sessions yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

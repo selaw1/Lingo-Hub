@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}New Session — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8">
+  <h1 class="text-xl font-bold mb-4">New Session</h1>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label for="title" class="block text-sm font-medium mb-1">Title</label>
+      <input type="text" name="title" id="title" required
+             class="w-full border rounded px-3 py-2">
+    </div>
+    <button type="submit" class="w-full bg-black text-white rounded py-2">Create</button>
+  </form>
+</div>
+{% endblock %}

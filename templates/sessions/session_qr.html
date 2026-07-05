@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} — QR{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
+  <h1 class="text-xl font-bold mb-2">{{ session.title }}</h1>
+  <p class="text-sm text-gray-500 mb-4">Scan this code to check in. It refreshes every 30 seconds so old screenshots go stale.</p>
+  <img id="qr-code" src="{% url 'session_qr_image' session.id %}" alt="Session QR code" class="mx-auto border rounded">
+  <p class="text-xs text-gray-400 mt-4">Session ID: {{ session.id }}</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const qrImg = document.getElementById('qr-code');
+  const baseSrc = qrImg.src;
+  setInterval(() => {
+    qrImg.src = baseSrc + '?t=' + Date.now();
+  }, 30000);
+</script>
+{% endblock %}

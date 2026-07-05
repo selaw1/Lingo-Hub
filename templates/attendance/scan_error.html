@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Scan Failed — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
+  <h1 class="text-xl font-bold mb-4 text-red-700">Scan Failed</h1>
+  <p class="text-sm text-gray-600 mb-4">
+    Your check-in couldn't be completed. See the message above for details.
+  </p>
+  <a href="{% url 'scan_page' %}" class="inline-block bg-black text-white rounded px-4 py-2 text-sm">Try Again</a>
+</div>
+{% endblock %}
