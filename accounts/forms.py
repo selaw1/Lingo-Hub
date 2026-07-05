@@ -6,6 +6,9 @@ from .models import User
 
 
 class UserCreationForm(BaseUserCreationForm):
+    """Public self-registration form. Excludes user_type on purpose — the
+    "host" role can only be granted by an admin via the Django admin."""
+
     class Meta(BaseUserCreationForm.Meta):
         model = User
         fields = ("username", "email")
@@ -17,7 +20,7 @@ class UserAdminCreationForm(BaseAdminUserCreationForm):
 
     class Meta(BaseAdminUserCreationForm.Meta):
         model = User
-        fields = ("username", "email")
+        fields = ("username", "email", "user_type")
 
 
 class UserChangeForm(BaseUserChangeForm):
