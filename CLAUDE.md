@@ -228,3 +228,46 @@ INSTALLED_APPS = [
 ## Deployment
 
 Use PostgreSQL in production. Works on Clever Cloud, Render, or any VPS.
+
+### Free hosting: Render (web) + Neon or Supabase (Postgres)
+
+Render's own free Postgres expires after 30 days; pairing Render's free web
+service with a separate always-free Postgres (Neon or Supabase) avoids that.
+
+**One-time setup:**
+1. Create a free Postgres database on [Neon](https://neon.tech) or
+   [Supabase](https://supabase.com). Either gives you a connection string —
+   pull `host`, `port` (usually `5432`), `database name`, `user`, and
+   `password` out of it.
+2. On [Render](https://render.com), create a new **Blueprint** from this
+   repo — it reads `render.yaml` at the repo root and creates the web
+   service, build command (`pip install`, `collectstatic`, `migrate`), and
+   start command (`gunicorn core.wsgi:application`) automatically.
+3. In the Render dashboard, set the env vars `render.yaml` marks
+   `sync: false` (not committed to the repo):
+   - `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` — from step 1
+   - `DJANGO_ALLOWED_HOSTS` — your `*.onrender.com` hostname (Render also
+     auto-appends `RENDER_EXTERNAL_HOSTNAME` to `ALLOWED_HOSTS`, so this can
+     stay blank)
+   - `DJANGO_SECRET_KEY` — `render.yaml` generates one automatically; only
+     set this yourself if you want to control the value
+4. Deploy. Then create tiers and a superuser once, from Render's shell tab
+   (or locally, pointed at the same DB via those same `DB_*` vars):
+   `python manage.py createsuperuser`.
+
+**Alternative:** `core/settings.py` also accepts a single `DATABASE_URL`
+connection string (checked first, before the `DB_*` vars) — set that
+instead if your Postgres provider only gives you one URL rather than
+separate fields.
+
+**Free-tier tradeoff:** Render's free web service spins down after 15
+minutes idle; the first request after that takes ~30-50s to wake up. Fine
+for a demo or small class, not for something you need always-warm.
+
+### Static files & production hardening
+- `whitenoise` serves collected static files directly from the Django
+  process — no S3/CDN needed for a free deploy.
+- `SECURE_PROXY_SSL_HEADER` is set so Django correctly detects HTTPS behind
+  Render's (or any) reverse proxy — needed for CSRF to work over HTTPS.
+- Set `DJANGO_DEBUG=False` in production; `DEBUG` defaults to `True` for
+  local dev only.
