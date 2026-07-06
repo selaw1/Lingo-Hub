@@ -1,10 +1,14 @@
+import io
+
+import pandas as pd
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.signing import BadSignature, SignatureExpired
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django_ratelimit.decorators import ratelimit
 
+from common.decorators import host_or_admin_required
 from loyalty.models import Stamp
 from sessions.models import Session
 from sessions.signing import signer
@@ -40,6 +44,23 @@ def scan_view(request):
         return redirect("scan_error")
 
     session = get_object_or_404(Session, id=session_id, is_active=True)
+
+    # Students may only be in one active session at a time. Re-scanning the
+    # same session is allowed (and de-duplicated below).
+    if not request.user.is_host_or_admin:
+        in_other_active_session = (
+            Attendance.objects.filter(user=request.user, session__is_active=True)
+            .exclude(session=session)
+            .exists()
+        )
+        if in_other_active_session:
+            messages.error(
+                request,
+                "You're already checked in to an active session. "
+                "You can join another one once it ends.",
+            )
+            return redirect("scan_error")
+
     attendance, created = Attendance.objects.get_or_create(user=request.user, session=session)
     if created:
         # guard matters — without it, a blocked duplicate scan (caught by
@@ -49,7 +70,7 @@ def scan_view(request):
     return redirect("wallet")
 
 
-@staff_member_required
+@host_or_admin_required
 def session_attendees_view(request, session_id):
     session = get_object_or_404(Session, id=session_id)
 
@@ -66,3 +87,30 @@ def session_attendees_view(request, session_id):
             "count": attendees.count(),
         },
     )
+
+
+@host_or_admin_required
+def session_export_view(request, session_id):
+    """Excel export of one session's attendance. Export only exists inside a
+    session — there is deliberately no global export endpoint."""
+    session = get_object_or_404(Session, id=session_id)
+
+    df = pd.DataFrame(
+        Attendance.objects.filter(session=session).values(
+            "user__username", "session__title", "timestamp"
+        )
+    )
+    if not df.empty:
+        # Excel has no concept of timezone-aware datetimes; USE_TZ=True means
+        # `timestamp` comes back UTC-aware, so drop the tzinfo before writing.
+        df["timestamp"] = df["timestamp"].dt.tz_localize(None)
+
+    buffer = io.BytesIO()
+    df.to_excel(buffer, index=False)
+
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = f"attachment; filename=attendance_{session_id}.xlsx"
+    return response

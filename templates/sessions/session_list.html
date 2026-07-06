@@ -1,53 +1,48 @@
 {% extends "base.html" %}
 {% block title %}Sessions — Lingo Hub{% endblock %}
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-  <div>
+<a href="{% url 'wallet' %}" class="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition mb-5">← Home</a>
+
+<div class="flex items-center justify-between gap-3 mb-6">
+  <div class="min-w-0">
     <h1 class="text-2xl font-extrabold tracking-tight">Sessions</h1>
-    <p class="text-sm text-white/50 mt-0.5">Create a session and put its QR on screen.</p>
+    <p class="text-sm text-ink/50 mt-0.5">Create a session and put its QR on screen.</p>
   </div>
   <a href="{% url 'session_create' %}"
-     class="shrink-0 px-4 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black text-sm font-bold transition shadow-[var(--glow-primary)]">
-    + New session
+     class="shrink-0 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 active:bg-primary-700 text-white text-sm font-bold transition">
+    + New
   </a>
 </div>
 
-<div class="mb-5">
-  <a href="{% url 'export_attendance' %}"
-     class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl glass text-sm text-white/70 hover:text-white hover:!bg-white/10 transition">
-    <span class="text-primary-400">⬇</span> Export all attendance (Excel)
-  </a>
-</div>
-
-<ul class="space-y-3">
+<ul class="space-y-2.5">
   {% for session in sessions %}
-  <li class="glass p-5 flex items-center justify-between gap-4 hover:!border-white/20 transition">
-    <div class="min-w-0">
+  <li class="card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+    <div class="flex-1 min-w-0">
       <p class="font-bold truncate">{{ session.title }}</p>
-      <p class="text-xs text-white/40 mt-1 flex items-center gap-2">
+      <p class="text-xs text-ink/40 mt-1 flex items-center gap-2">
         <span>{{ session.created_at|date:"M j, Y H:i" }}</span>
         {% if session.is_active %}
-          <span class="inline-flex items-center gap-1.5 text-primary-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse"></span> Active
+          <span class="inline-flex items-center gap-1.5 text-emerald-600 font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
           </span>
         {% else %}
-          <span class="text-white/30">Inactive</span>
+          <span class="text-ink/30">Inactive</span>
         {% endif %}
       </p>
     </div>
     <div class="flex gap-2 shrink-0 text-sm">
       <a href="{% url 'session_qr' session.id %}"
-         class="px-3.5 py-2 rounded-xl bg-primary-500/15 border border-primary-500/30 text-primary-200 font-semibold hover:bg-primary-500/25 transition">
+         class="flex-1 sm:flex-none text-center px-3.5 py-2 rounded-xl bg-primary-50 border border-primary-200 text-primary-700 font-semibold hover:bg-primary-100 transition">
         Show QR
       </a>
       <a href="{% url 'session_attendees' session.id %}"
-         class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 font-semibold hover:bg-white/10 hover:text-white transition">
+         class="flex-1 sm:flex-none text-center px-3.5 py-2 rounded-xl border border-ink/10 text-ink/70 font-semibold hover:bg-ink/5 hover:text-ink transition">
         Attendees
       </a>
     </div>
   </li>
   {% empty %}
-  <li class="glass p-10 text-center text-white/40 text-sm">
+  <li class="card p-10 text-center text-ink/40 text-sm">
     No sessions yet — create your first one.
   </li>
   {% endfor %}

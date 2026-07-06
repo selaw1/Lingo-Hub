@@ -1,21 +1,22 @@
 import io
 
 import qrcode
-from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+
+from common.decorators import host_or_admin_required
 
 from .models import Session
 from .signing import generate_qr
 
 
-@staff_member_required
+@host_or_admin_required
 def session_list_view(request):
     sessions = Session.objects.all()
     return render(request, "sessions/session_list.html", {"sessions": sessions})
 
 
-@staff_member_required
+@host_or_admin_required
 def session_create_view(request):
     if request.method == "POST":
         title = request.POST.get("title", "").strip()
@@ -25,13 +26,13 @@ def session_create_view(request):
     return render(request, "sessions/session_create.html")
 
 
-@staff_member_required
+@host_or_admin_required
 def session_qr_view(request, session_id):
     session = get_object_or_404(Session, id=session_id)
     return render(request, "sessions/session_qr.html", {"session": session})
 
 
-@staff_member_required
+@host_or_admin_required
 def session_qr_image_view(request, session_id):
     session = get_object_or_404(Session, id=session_id)
     token = generate_qr(str(session.id))

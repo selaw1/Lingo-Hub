@@ -26,3 +26,11 @@ class User(AbstractUser):
     gender = models.CharField(choices=GenderChoices.choices, max_length=20, blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
     mobile_number = PhoneNumberField(blank=True, null=True)
+
+    @property
+    def is_host(self):
+        return self.user_type == UserTypeChoices.HOST
+
+    @property
+    def is_host_or_admin(self):
+        return self.is_staff or self.is_host

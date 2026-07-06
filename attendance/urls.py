@@ -11,4 +11,9 @@ urlpatterns = [
         views.session_attendees_view,
         name="session_attendees",
     ),
+    path(
+        "sessions/<uuid:session_id>/attendees/export/",
+        views.session_export_view,
+        name="session_export",
+    ),
 ]

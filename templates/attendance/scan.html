@@ -1,20 +1,22 @@
 {% extends "base.html" %}
-{% block title %}Scan — Lingo Hub{% endblock %}
+{% block title %}Join a session — Lingo Hub{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto mt-4">
-  <div class="text-center mb-6">
-    <h1 class="text-2xl font-extrabold tracking-tight">Scan session QR</h1>
-    <p class="text-sm text-white/50 mt-1">Point your camera at your teacher's screen.</p>
+<div class="max-w-md mx-auto">
+  <a href="{% url 'wallet' %}" class="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition mb-5">← Home</a>
+
+  <div class="mb-5">
+    <h1 class="text-2xl font-extrabold tracking-tight">Join a session</h1>
+    <p class="text-sm text-ink/50 mt-1">Point your camera at your teacher's QR code.</p>
   </div>
 
-  <div class="glass p-4">
-    <div id="reader" class="rounded-xl overflow-hidden border border-white/10 bg-black/40"></div>
-    <p id="scan-status" class="text-sm text-white/50 text-center mt-4 min-h-[1.25rem]"></p>
+  <div class="card p-4">
+    <div id="reader" class="rounded-xl overflow-hidden bg-ink/5"></div>
+    <p id="scan-status" class="text-sm text-ink/50 text-center mt-3 min-h-[1.25rem]"></p>
   </div>
 
-  <div class="glass mt-4 px-4 py-3 flex items-start gap-2.5 text-xs text-white/40">
-    <span class="text-primary-400 mt-0.5">ⓘ</span>
-    <span>Each QR code is valid for 3 minutes. One scan per session — a valid scan earns you a stamp instantly.</span>
+  <div class="card mt-3 px-4 py-3 flex items-start gap-2.5 text-xs text-ink/50">
+    <span class="text-primary-600 mt-0.5">ⓘ</span>
+    <span>QR codes are valid for 3 minutes and you can be in one active session at a time. A valid scan earns a stamp instantly.</span>
   </div>
 
   <form id="scan-form" method="post" action="{% url 'scan' %}" class="hidden">
@@ -38,7 +40,6 @@
     if (submitted) return;
     submitted = true;
     statusEl.textContent = "QR detected — checking you in...";
-    statusEl.classList.add('text-primary-300');
     qrInput.value = decodedText;
     scanner.stop().finally(() => form.submit());
   }
