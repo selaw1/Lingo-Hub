@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Scan Failed — Lingo Hub{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
-  <h1 class="text-xl font-bold mb-4 text-red-700">Scan Failed</h1>
-  <p class="text-sm text-gray-600 mb-4">
-    Your check-in couldn't be completed. See the message above for details.
-  </p>
-  <a href="{% url 'scan_page' %}" class="inline-block bg-black text-white rounded px-4 py-2 text-sm">Try Again</a>
+<div class="max-w-sm mx-auto mt-10 text-center">
+  <div class="glass p-8">
+    <span class="inline-grid place-items-center w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 text-3xl">⚠️</span>
+    <h1 class="text-2xl font-extrabold tracking-tight mt-5">Scan failed</h1>
+    <p class="text-sm text-white/50 mt-2">
+      Your check-in couldn't be completed. See the message above for details.
+    </p>
+    <a href="{% url 'scan_page' %}"
+       class="mt-6 inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black font-bold transition shadow-[var(--glow-primary)]">
+      Try again
+    </a>
+    <a href="{% url 'wallet' %}" class="mt-3 inline-block text-sm text-white/50 hover:text-white transition">
+      Back to wallet
+    </a>
+  </div>
 </div>
 {% endblock %}

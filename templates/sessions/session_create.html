@@ -1,16 +1,28 @@
 {% extends "base.html" %}
 {% block title %}New Session — Lingo Hub{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8">
-  <h1 class="text-xl font-bold mb-4">New Session</h1>
-  <form method="post" class="space-y-4">
-    {% csrf_token %}
-    <div>
-      <label for="title" class="block text-sm font-medium mb-1">Title</label>
-      <input type="text" name="title" id="title" required
-             class="w-full border rounded px-3 py-2">
-    </div>
-    <button type="submit" class="w-full bg-black text-white rounded py-2">Create</button>
-  </form>
+<div class="max-w-sm mx-auto mt-10">
+  <div class="text-center mb-6">
+    <h1 class="text-2xl font-extrabold tracking-tight">New session</h1>
+    <p class="text-sm text-white/50 mt-1">Give it a name — the QR comes next.</p>
+  </div>
+
+  <div class="glass p-6">
+    <form method="post">
+      {% csrf_token %}
+      <p>
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" required placeholder="e.g. Monday Grammar Class" autofocus>
+      </p>
+      <button type="submit"
+              class="w-full mt-2 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black font-bold transition shadow-[var(--glow-primary)]">
+        Create &amp; show QR
+      </button>
+    </form>
+  </div>
+
+  <p class="mt-5 text-center">
+    <a href="{% url 'session_list' %}" class="text-sm text-white/50 hover:text-white transition">← Back to sessions</a>
+  </p>
 </div>
 {% endblock %}

@@ -1,31 +1,55 @@
 {% extends "base.html" %}
 {% block title %}Sessions — Lingo Hub{% endblock %}
 {% block content %}
-<div class="flex items-center justify-between mb-4">
-  <h1 class="text-xl font-bold">Sessions</h1>
-  <a href="{% url 'session_create' %}" class="bg-black text-white rounded px-4 py-2 text-sm">+ New Session</a>
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-extrabold tracking-tight">Sessions</h1>
+    <p class="text-sm text-white/50 mt-0.5">Create a session and put its QR on screen.</p>
+  </div>
+  <a href="{% url 'session_create' %}"
+     class="shrink-0 px-4 py-2 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black text-sm font-bold transition shadow-[var(--glow-primary)]">
+    + New session
+  </a>
 </div>
 
-<div class="mb-4">
-  <a href="{% url 'export_attendance' %}" class="text-sm underline text-gray-700">Export all attendance (Excel)</a>
+<div class="mb-5">
+  <a href="{% url 'export_attendance' %}"
+     class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl glass text-sm text-white/70 hover:text-white hover:!bg-white/10 transition">
+    <span class="text-primary-400">⬇</span> Export all attendance (Excel)
+  </a>
 </div>
 
-<ul class="space-y-2">
+<ul class="space-y-3">
   {% for session in sessions %}
-  <li class="bg-white rounded shadow p-4 flex items-center justify-between">
-    <div>
-      <p class="font-semibold">{{ session.title }}</p>
-      <p class="text-xs text-gray-500">
-        Created {{ session.created_at }} — {% if session.is_active %}Active{% else %}Inactive{% endif %}
+  <li class="glass p-5 flex items-center justify-between gap-4 hover:!border-white/20 transition">
+    <div class="min-w-0">
+      <p class="font-bold truncate">{{ session.title }}</p>
+      <p class="text-xs text-white/40 mt-1 flex items-center gap-2">
+        <span>{{ session.created_at|date:"M j, Y H:i" }}</span>
+        {% if session.is_active %}
+          <span class="inline-flex items-center gap-1.5 text-primary-300">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse"></span> Active
+          </span>
+        {% else %}
+          <span class="text-white/30">Inactive</span>
+        {% endif %}
       </p>
     </div>
-    <div class="flex gap-3 text-sm">
-      <a href="{% url 'session_qr' session.id %}" class="underline">Show QR</a>
-      <a href="{% url 'session_attendees' session.id %}" class="underline">Attendees</a>
+    <div class="flex gap-2 shrink-0 text-sm">
+      <a href="{% url 'session_qr' session.id %}"
+         class="px-3.5 py-2 rounded-xl bg-primary-500/15 border border-primary-500/30 text-primary-200 font-semibold hover:bg-primary-500/25 transition">
+        Show QR
+      </a>
+      <a href="{% url 'session_attendees' session.id %}"
+         class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 font-semibold hover:bg-white/10 hover:text-white transition">
+        Attendees
+      </a>
     </div>
   </li>
   {% empty %}
-  <li class="text-gray-500">No sessions yet.</li>
+  <li class="glass p-10 text-center text-white/40 text-sm">
+    No sessions yet — create your first one.
+  </li>
   {% endfor %}
 </ul>
 {% endblock %}

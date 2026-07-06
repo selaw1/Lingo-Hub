@@ -1,39 +1,69 @@
 {% extends "base.html" %}
 {% block title %}My Wallet — Lingo Hub{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8 text-center">
-  <p class="text-sm text-gray-500">Current Tier</p>
-  <h1 class="text-3xl font-bold my-2">
-    {% if tier %}{{ tier.icon }} {{ tier.name }}{% else %}No tier yet{% endif %}
-  </h1>
-  <p class="text-lg font-semibold">{{ stamp_count }} stamp{{ stamp_count|pluralize }}</p>
+<div class="max-w-sm mx-auto">
 
-  {% if next_tier %}
-    <div class="mt-4">
-      <div class="w-full bg-gray-200 rounded-full h-3">
-        <div class="bg-black h-3 rounded-full" style="width: {% widthratio stamp_count next_tier.min_stamps 100 %}%"></div>
-      </div>
-      <p class="text-xs text-gray-500 mt-1">
-        {{ stamp_count }}/{{ next_tier.min_stamps }} stamps to {{ next_tier.name }}
-      </p>
+  <!-- Tier hero card -->
+  <div class="glass p-8 text-center relative overflow-hidden">
+    <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-primary-500/20 blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <p class="text-[0.7rem] font-bold uppercase tracking-[0.25em] text-white/40">Current tier</p>
+
+    <div class="text-6xl mt-4 drop-shadow-[0_0_25px_rgb(var(--primary-500)/0.45)]">
+      {% if tier %}{{ tier.icon|default:"⭐" }}{% else %}🔒{% endif %}
     </div>
-  {% else %}
-    <p class="text-xs text-gray-500 mt-4">You've reached the top tier!</p>
-  {% endif %}
-</div>
 
-{% if tiers %}
-<div class="max-w-sm mx-auto mt-6">
-  <h2 class="text-sm font-semibold text-gray-600 mb-2">Tier Ladder</h2>
-  <ul class="space-y-1">
-    {% for t in tiers %}
-    <li class="flex items-center justify-between bg-white rounded px-4 py-2 shadow-sm text-sm
-                {% if tier and t.id == tier.id %}ring-2 ring-black{% endif %}">
-      <span>{{ t.icon }} {{ t.name }}</span>
-      <span class="text-gray-500">{{ t.min_stamps }}+ stamps</span>
-    </li>
-    {% endfor %}
-  </ul>
+    <h1 class="text-4xl font-extrabold tracking-tight mt-3 bg-gradient-to-r from-primary-300 via-primary-400 to-primary-500 bg-clip-text text-transparent">
+      {% if tier %}{{ tier.name }}{% else %}No tier yet{% endif %}
+    </h1>
+
+    <div class="inline-flex items-center gap-2 mt-4 px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/25 text-primary-200 text-sm font-semibold">
+      <span class="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
+      {{ stamp_count }} stamp{{ stamp_count|pluralize }}
+    </div>
+
+    {% if next_tier %}
+      <div class="mt-7 text-left">
+        <div class="w-full h-3 rounded-full bg-white/10 overflow-hidden">
+          <div class="h-full rounded-full bg-gradient-to-r from-primary-600 to-primary-400 shadow-[var(--glow-primary)]"
+               style="width: {% widthratio stamp_count next_tier.min_stamps 100 %}%"></div>
+        </div>
+        <p class="text-xs text-white/50 mt-2 text-center">
+          <span class="text-primary-300 font-semibold">{{ stamp_count }}/{{ next_tier.min_stamps }}</span>
+          stamps to {{ next_tier.name }}
+        </p>
+      </div>
+    {% else %}
+      <p class="text-xs text-primary-300/80 mt-6 font-semibold">🏆 You've reached the top tier!</p>
+    {% endif %}
+  </div>
+
+  <!-- Tier ladder -->
+  {% if tiers %}
+  <div class="mt-8">
+    <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.25em] text-white/40 mb-3 px-1">Tier ladder</h2>
+    <ul class="space-y-2">
+      {% for t in tiers %}
+      <li class="glass px-4 py-3 flex items-center justify-between text-sm transition
+                 {% if tier and t.id == tier.id %}!border-primary-500/50 !bg-primary-500/10{% endif %}">
+        <span class="flex items-center gap-2.5 font-semibold {% if tier and t.id == tier.id %}text-primary-200{% endif %}">
+          <span class="text-lg">{{ t.icon|default:"⭐" }}</span>
+          {{ t.name }}
+          {% if tier and t.id == tier.id %}
+            <span class="text-[0.62rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary-500 text-black">You</span>
+          {% endif %}
+        </span>
+        <span class="text-white/40">{{ t.min_stamps }}+ stamps</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Quick action -->
+  <a href="{% url 'scan_page' %}"
+     class="mt-8 flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black font-bold transition shadow-[var(--glow-primary)]">
+    <span>📷</span> Scan a session QR
+  </a>
 </div>
-{% endif %}
 {% endblock %}

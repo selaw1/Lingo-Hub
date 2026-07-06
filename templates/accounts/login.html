@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% block title %}Login — Lingo Hub{% endblock %}
 {% block content %}
-<div class="max-w-sm mx-auto bg-white rounded-lg shadow p-6 mt-8">
-  <h1 class="text-xl font-bold mb-4">Login</h1>
-  <form method="post" class="space-y-4">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="w-full bg-black text-white rounded py-2">Login</button>
-  </form>
-  <p class="mt-4 text-sm text-gray-600">
-    No account? <a href="{% url 'register' %}" class="underline">Register</a>
+<div class="max-w-sm mx-auto mt-10">
+  <div class="text-center mb-6">
+    <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-black text-2xl font-extrabold shadow-[var(--glow-primary)]">L</span>
+    <h1 class="text-2xl font-extrabold mt-4 tracking-tight">Welcome back</h1>
+    <p class="text-sm text-white/50 mt-1">Log in to check your stamps and tier.</p>
+  </div>
+
+  <div class="glass p-6">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit"
+              class="w-full mt-2 py-2.5 rounded-xl bg-primary-500 hover:bg-primary-400 active:bg-primary-600 text-black font-bold transition shadow-[var(--glow-primary)]">
+        Login
+      </button>
+    </form>
+  </div>
+
+  <p class="mt-5 text-center text-sm text-white/50">
+    No account?
+    <a href="{% url 'register' %}" class="font-semibold text-primary-400 hover:text-primary-300 transition">Register</a>
   </p>
 </div>
 {% endblock %}
