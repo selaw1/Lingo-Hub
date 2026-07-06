@@ -5,7 +5,6 @@ Django settings for core project — Lingo Hub (QR attendance + loyalty).
 import os
 from pathlib import Path
 
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -99,25 +98,17 @@ WSGI_APPLICATION = "core.wsgi.application"
 # the separate DB_* vars below so nothing changes for `make migrate`/`make
 # server` on a laptop.
 
-if os.environ.get("DATABASE_URL"):
-    DATABASES = {
-        "default": dj_database_url.config(
-            env="DATABASE_URL",
-            conn_max_age=600,
-            ssl_require=True,
-        )
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DB_NAME", "lingo_hub"),
+        "USER": os.environ.get("DB_USER", "postgres"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME", "lingo_hub"),
-            "USER": os.environ.get("DB_USER", "postgres"),
-            "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
-            "HOST": os.environ.get("DB_HOST", "localhost"),
-            "PORT": os.environ.get("DB_PORT", "5432"),
-        }
-    }
+}
 
 
 # Password validation
