@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Lingo Hub{% endblock %}</title>
+
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#f2f1ee">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            /* Brand colors resolve to the CSS variables below (raw RGB
+               channels so opacity modifiers like bg-primary-500/10 work).
+               Re-skin the app by editing the :root block only. */
+            primary: {
+              50: "rgb(var(--primary-50) / <alpha-value>)",
+              100: "rgb(var(--primary-100) / <alpha-value>)",
+              200: "rgb(var(--primary-200) / <alpha-value>)",
+              300: "rgb(var(--primary-300) / <alpha-value>)",
+              400: "rgb(var(--primary-400) / <alpha-value>)",
+              500: "rgb(var(--primary-500) / <alpha-value>)",
+              600: "rgb(var(--primary-600) / <alpha-value>)",
+              700: "rgb(var(--primary-700) / <alpha-value>)",
+              800: "rgb(var(--primary-800) / <alpha-value>)",
+              900: "rgb(var(--primary-900) / <alpha-value>)",
+              950: "rgb(var(--primary-950) / <alpha-value>)",
+            },
+            ink: "rgb(var(--ink) / <alpha-value>)",
+            page: "rgb(var(--page) / <alpha-value>)",
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      /* ── Brand: orange scale (RGB channels) ─────────────────── */
+      --primary-50: 255 247 237;
+      --primary-100: 255 237 213;
+      --primary-200: 254 215 170;
+      --primary-300: 253 186 116;
+      --primary-400: 251 146 60;
+      --primary-500: 249 115 22;
+      --primary-600: 234 88 12;
+      --primary-700: 194 65 12;
+      --primary-800: 154 52 18;
+      --primary-900: 124 45 18;
+      --primary-950: 67 20 7;
+
+      /* ── Light theme surfaces ───────────────────────────────── */
+      --page: 242 241 238;     /* warm light-grey page background */
+      --surface: 255 255 255;  /* cards */
+      --ink: 28 25 23;         /* near-black text */
+    }
+
+    /* Card — combine with Tailwind spacing utilities */
+    .card {
+      background: rgb(var(--surface));
+      border: 1px solid rgb(var(--ink) / 0.08);
+      border-radius: 1rem;
+      box-shadow: 0 1px 2px rgb(var(--ink) / 0.04);
+    }
+
+    /* Django form rendering ({{ form.as_p }}) */
+    form p { margin-bottom: 1.1rem; }
+    form label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgb(var(--ink) / 0.75);
+      margin-bottom: 0.4rem;
+    }
+    form input[type="text"],
+    form input[type="password"],
+    form input[type="email"],
+    form input[type="date"],
+    form input[type="tel"],
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border-radius: 0.75rem;
+      background: rgb(var(--surface));
+      border: 1px solid rgb(var(--ink) / 0.15);
+      color: rgb(var(--ink));
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    form input:focus, form select:focus, form textarea:focus {
+      border-color: rgb(var(--primary-500) / 0.7);
+      box-shadow: 0 0 0 3px rgb(var(--primary-500) / 0.15);
+    }
+    .helptext {
+      display: block;
+      font-size: 0.72rem;
+      color: rgb(var(--ink) / 0.45);
+      margin-top: 0.4rem;
+      line-height: 1.4;
+    }
+    .helptext ul { list-style: disc; padding-left: 1.1rem; margin-top: 0.25rem; }
+    /* Password-validator rules: browsers hoist the <ul> out of as_p's
+       <p><span class="helptext"> wrapper, so style bare form lists too */
+    form ul:not(.errorlist) {
+      font-size: 0.72rem;
+      color: rgb(var(--ink) / 0.45);
+      list-style: disc;
+      padding-left: 1.1rem;
+      margin: -0.4rem 0 1.1rem;
+      line-height: 1.5;
+    }
+    .errorlist {
+      list-style: none;
+      padding: 0;
+      margin: 0.35rem 0;
+      font-size: 0.8rem;
+      color: rgb(220 38 38);
+    }
+  </style>
+</head>
+<body class="font-sans bg-page text-ink min-h-screen flex flex-col antialiased">
+
+  <main class="flex-1 w-full max-w-3xl mx-auto px-4 pt-6 pb-10">
+    {% if messages %}
+      <ul class="mb-5 space-y-2 max-w-md mx-auto">
+        {% for message in messages %}
+          <li class="card px-4 py-3 text-sm flex items-start gap-2.5
+                     {% if message.tags == 'error' %}!border-red-200 !bg-red-50 text-red-700{% else %}!border-primary-200 !bg-primary-50 text-primary-800{% endif %}">
+            <span class="mt-0.5 shrink-0">{% if message.tags == 'error' %}&#9888;{% else %}&#10003;{% endif %}</span>
+            <span>{{ message }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register("{% static 'sw.js' %}");
+    }
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

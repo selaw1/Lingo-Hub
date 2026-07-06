@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Lingo Card — Lingo Hub{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <p class="text-xs text-ink/50">Welcome back</p>
+      <h1 class="text-lg font-extrabold tracking-tight">{{ user.username }}</h1>
+    </div>
+    <form action="{% url 'logout' %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="text-sm text-ink/40 hover:text-ink transition px-2 py-1">Logout</button>
+    </form>
+  </div>
+
+  <!-- Lingo Card -->
+  <div class="rounded-2xl bg-ink text-white p-6 shadow-lg">
+    <div class="flex items-center justify-between">
+      <p class="text-[0.65rem] font-bold uppercase tracking-[0.25em] text-white/50">Lingo Card</p>
+      <span class="w-6 h-6 rounded-md bg-primary-500 grid place-items-center text-white text-xs font-extrabold">L</span>
+    </div>
+
+    <div class="flex items-end justify-between mt-6">
+      <div>
+        <p class="text-xs text-white/50 mb-1">Current tier</p>
+        <p class="text-2xl font-extrabold tracking-tight">
+          {% if tier %}{{ tier.icon }} {{ tier.name }}{% else %}No tier yet{% endif %}
+        </p>
+      </div>
+      <div class="text-right">
+        <p class="text-3xl font-extrabold text-primary-400 leading-none">{{ stamp_count }}</p>
+        <p class="text-xs text-white/50 mt-1">stamp{{ stamp_count|pluralize }}</p>
+      </div>
+    </div>
+
+    {% if next_tier %}
+      <div class="mt-6">
+        <div class="w-full h-1.5 rounded-full bg-white/15 overflow-hidden">
+          <div class="h-full rounded-full bg-primary-500"
+               style="width: {% widthratio stamp_count next_tier.min_stamps 100 %}%"></div>
+        </div>
+        <p class="text-[0.7rem] text-white/50 mt-2">
+          {{ stamp_count }}/{{ next_tier.min_stamps }} stamps to {{ next_tier.name }}
+        </p>
+      </div>
+    {% else %}
+      <p class="text-[0.7rem] text-white/60 mt-6">You've reached the top tier 🏆</p>
+    {% endif %}
+  </div>
+
+  <!-- Sections -->
+  <nav class="mt-6 space-y-2.5">
+    <a href="{% url 'scan_page' %}" class="card flex items-center gap-4 p-4 hover:!border-ink/20 transition group">
+      <span class="w-10 h-10 rounded-xl bg-page grid place-items-center text-lg border border-ink/5">📷</span>
+      <span class="flex-1 min-w-0">
+        <span class="block font-bold text-sm">Join a session</span>
+        <span class="block text-xs text-ink/50 mt-0.5">Scan your teacher's QR to check in</span>
+      </span>
+      <span class="text-ink/30 group-hover:text-ink/60 transition">→</span>
+    </a>
+
+    {% if user.is_host_or_admin %}
+    <a href="{% url 'session_list' %}" class="card flex items-center gap-4 p-4 hover:!border-ink/20 transition group">
+      <span class="w-10 h-10 rounded-xl bg-page grid place-items-center text-lg border border-ink/5">🗂️</span>
+      <span class="flex-1 min-w-0">
+        <span class="block font-bold text-sm">Manage sessions</span>
+        <span class="block text-xs text-ink/50 mt-0.5">Create sessions, show QRs, view attendees</span>
+      </span>
+      <span class="text-ink/30 group-hover:text-ink/60 transition">→</span>
+    </a>
+    {% endif %}
+  </nav>
+
+  <!-- Tier ladder -->
+  {% if tiers %}
+  <section class="mt-8">
+    <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink/40 mb-3 px-1">Tier ladder</h2>
+    <ul class="card divide-y divide-ink/5 overflow-hidden">
+      {% for t in tiers %}
+      <li class="flex items-center justify-between px-4 py-3 text-sm {% if tier and t.id == tier.id %}bg-primary-50{% endif %}">
+        <span class="flex items-center gap-2.5 font-semibold">
+          <span>{{ t.icon|default:"⭐" }}</span>
+          {{ t.name }}
+          {% if tier and t.id == tier.id %}
+            <span class="text-[0.6rem] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary-500 text-white">You</span>
+          {% endif %}
+        </span>
+        <span class="text-ink/40">{{ t.min_stamps }}+ stamps</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

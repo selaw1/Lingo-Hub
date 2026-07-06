@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} — QR{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto text-center">
+  <a href="{% url 'session_list' %}" class="inline-flex items-center gap-1.5 text-sm text-ink/50 hover:text-ink transition mb-5">← Sessions</a>
+
+  <div class="card p-6">
+    <h1 class="text-xl font-extrabold tracking-tight">{{ session.title }}</h1>
+    <p class="text-xs text-ink/50 mt-1.5 flex items-center justify-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+      Live — refreshes every 30s so screenshots go stale
+    </p>
+
+    <div class="mt-5 mx-auto w-fit p-3 bg-white rounded-2xl border border-ink/10">
+      <img id="qr-code" src="{% url 'session_qr_image' session.id %}" alt="Session QR code" class="block w-56 h-56 max-w-full">
+    </div>
+
+    <p class="text-[0.65rem] text-ink/30 mt-4 font-mono break-all">{{ session.id }}</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const qrImg = document.getElementById('qr-code');
+  const baseSrc = qrImg.src;
+  setInterval(() => {
+    qrImg.src = baseSrc + '?t=' + Date.now();
+  }, 30000);
+</script>
+{% endblock %}
